@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.enums.Sort;
 import ru.practicum.ewm.event.dto.*;
 import ru.practicum.ewm.event.service.EventService;
+import ru.practicum.ewm.exception.AccessException;
 import ru.practicum.ewm.request.dto.ParticipationRequestDto;
 
 import java.time.LocalDateTime;
@@ -64,16 +65,20 @@ public class EventController {
                                             @RequestParam(required = false) Integer[] categories,
                                             @RequestParam(required = false) Boolean paid,
                                             @RequestParam(required = false)
-                                                @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+                                            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
                                             @RequestParam(required = false)
-                                                @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+                                            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                             @RequestParam(defaultValue = "true", required = false) Boolean onlyAvailable,
                                             @RequestParam(required = false, defaultValue = "EVENT_DATE") Sort sort,
                                             @RequestParam(required = false, defaultValue = "0") int from,
                                             @RequestParam(required = false, defaultValue = "10") int size,
                                             HttpServletRequest request) {
-        return eventService.searchEvents(text, categories, paid, rangeStart, rangeEnd,
-                onlyAvailable, sort, from, size, request);
+        try {
+            return eventService.searchEvents(text, categories, paid, rangeStart, rangeEnd,
+                    onlyAvailable, sort, from, size, request);
+        } catch (Throwable e) {
+            throw new AccessException(e.getMessage());
+        }
     }
 
     @GetMapping("/events/{eventId}")
@@ -86,9 +91,9 @@ public class EventController {
                                      @RequestParam(required = false) String[] states,
                                      @RequestParam(required = false) Integer[] categories,
                                      @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-                                          LocalDateTime rangeStart,
+                                     LocalDateTime rangeStart,
                                      @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-                                          LocalDateTime rangeEnd,
+                                     LocalDateTime rangeEnd,
                                      @RequestParam(required = false, defaultValue = "0") int from,
                                      @RequestParam(required = false, defaultValue = "10") int size) {
         return eventService.searchEventsByAdmin(users, states, categories, rangeStart, rangeEnd, from, size);
