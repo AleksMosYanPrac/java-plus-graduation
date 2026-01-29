@@ -56,6 +56,7 @@ public class Filter {
                   int from,
                   int size) {
         this.text = text;
+        this.categories = categories;
         this.paid = paid;
         this.rangeStart = rangeStart;
         this.rangeEnd = rangeEnd;
