@@ -16,10 +16,10 @@ import java.util.List;
 public interface StatsClient {
 
     @PostMapping("/hit")
-    void postHit(@RequestBody EndpointHitDto requestBody);
+    EndpointHitDto post(@RequestBody EndpointHitDto requestBody);
 
     @GetMapping("/stats")
-    List<ViewStatsDto> getStatistics(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime start,
+    List<ViewStatsDto> get(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime start,
                                      @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end,
                                      @RequestParam(defaultValue = "") String[] uris,
                                      @RequestParam(defaultValue = "false") boolean unique);
