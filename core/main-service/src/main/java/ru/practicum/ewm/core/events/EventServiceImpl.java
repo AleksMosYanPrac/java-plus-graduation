@@ -254,6 +254,9 @@ public class EventServiceImpl implements EventService {
         if (event.getDescription() != null) {
             updatedEvent.setDescription(event.getDescription());
         }
+        if (event.getParticipantLimit() != null) {
+            updatedEvent.setParticipantLimit(event.getParticipantLimit());
+        }
         if (event.getLocation() != null) {
             Location location = findLocation(event.getLocation());
             updatedEvent.setLocation(location);
