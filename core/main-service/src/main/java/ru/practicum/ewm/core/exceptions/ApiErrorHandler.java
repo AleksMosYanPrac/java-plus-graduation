@@ -1,6 +1,7 @@
 package ru.practicum.ewm.core.exceptions;
 
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -12,6 +13,12 @@ public interface ApiErrorHandler {
     @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
     default ApiError onConstraintViolationException(ConstraintViolationException exception) {
+        return ApiError.from(exception, BAD_REQUEST);
+    }
+
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    default ApiError onMethodArgumentException(MethodArgumentNotValidException exception) {
         return ApiError.from(exception, BAD_REQUEST);
     }
 

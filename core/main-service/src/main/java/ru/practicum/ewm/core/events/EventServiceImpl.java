@@ -1,7 +1,6 @@
 package ru.practicum.ewm.core.events;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -45,7 +44,6 @@ public class EventServiceImpl implements EventService {
     private final CategoryRepository categoryRepository;
     private final RequestRepository requestRepository;
     private final RequestMapper requestMapper;
-    private final Validator validator;
 
     @Override
     public List<EventFullDto> findAllByCurrentUser(Long userId, Pageable pageable) {
