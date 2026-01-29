@@ -9,6 +9,6 @@ spring:
       schema-locations: classpath:db_init.sql
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/ewm_database
+    url: jdbc:postgresql://localhost:5432/main
     username: postgres
     password: postgres

@@ -12,6 +12,6 @@ spring:
       schema-locations: classpath:db_init.sql
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/statistics
+    url: jdbc:postgresql://localhost:5432/stats
     username: postgres
     password: postgres

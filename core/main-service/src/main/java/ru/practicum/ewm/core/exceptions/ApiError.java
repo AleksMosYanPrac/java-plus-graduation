@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 public class ApiError {
@@ -20,7 +21,7 @@ public class ApiError {
         ApiError apiError = new ApiError();
         apiError.setErrors(Arrays.stream(exception.getStackTrace()).map(StackTraceElement::toString).toList());
         apiError.setMessage(exception.getMessage());
-        apiError.setReason(exception.getCause().getMessage());
+        apiError.setReason(Objects.isNull(exception.getCause()) ? null : exception.getCause().getMessage());
         apiError.setStatus(httpStatus);
         apiError.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         return apiError;
