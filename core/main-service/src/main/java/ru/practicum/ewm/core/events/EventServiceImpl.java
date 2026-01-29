@@ -202,6 +202,7 @@ public class EventServiceImpl implements EventService {
                     .toList();
             case EVENT_DATE -> events
                     .stream()
+                    .peek(this::calculateView)
                     .filter(e -> Objects.nonNull(e.getEventDate()))
                     .sorted(Comparator.comparing(Event::getEventDate))
                     .map(eventMapper::toEventShortDto)
@@ -277,7 +278,6 @@ public class EventServiceImpl implements EventService {
             switch (State.valueOf(event.getStateAction())) {
                 case PUBLISH_EVENT -> updatedEvent.setState(PUBLISHED);
                 case REJECT_EVENT, CANCEL_REVIEW -> updatedEvent.setState(CANCELED);
-                case SEND_TO_REVIEW -> updatedEvent.setState(PENDING);
             }
         }
         updatedEvent.setPublishedOn(LocalDateTime.now());
@@ -302,8 +302,8 @@ public class EventServiceImpl implements EventService {
         log.info("Calculate views for event:{}", event.getId());
         try {
             List<ViewStatsDto> viewStatsDto = statsClient.getStatistics(
-                    LocalDateTime.now().minusYears(1),
-                    LocalDateTime.now().plusDays(1),
+                    LocalDateTime.now().minusDays(2),
+                    LocalDateTime.now().plusDays(2),
                     new String[]{"/events/" + event.getId()},
                     true
             );
@@ -312,7 +312,7 @@ public class EventServiceImpl implements EventService {
                 views = viewStatsDto.getFirst().getHits() != null ? viewStatsDto.getFirst().getHits() : 0L;
             }
             event.setViews((int) views);
-            return eventRepository.save(event);
+            return event;
         } catch (Exception e) {
             log.error("Exception at request info from stat server {}", event.getId(), e);
             return event;

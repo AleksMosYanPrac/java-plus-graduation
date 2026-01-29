@@ -17,7 +17,8 @@ public class DateRangeValidator implements ConstraintValidator<DateRange, Filter
     public boolean isValid(Filter filter, ConstraintValidatorContext constraintValidatorContext) {
         if (Objects.nonNull(filter.getRangeStart()) && Objects.nonNull(filter.getRangeEnd())) {
             return filter.getRangeStart().isBefore(filter.getRangeEnd());
+        }else {
+            return true;
         }
-        return true;
     }
 }
