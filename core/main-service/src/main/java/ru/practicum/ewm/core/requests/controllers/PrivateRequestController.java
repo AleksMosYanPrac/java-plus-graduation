@@ -2,9 +2,9 @@ package ru.practicum.ewm.core.requests.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.core.exceptions.ApiErrorHandler;
-import ru.practicum.ewm.core.exceptions.DataIntegrityViolation;
-import ru.practicum.ewm.core.exceptions.NotFoundException;
+import ru.practicum.ewm.stats.exceptions.ApiErrorHandler;
+import ru.practicum.ewm.stats.exceptions.DataIntegrityViolation;
+import ru.practicum.ewm.stats.exceptions.NotFoundException;
 import ru.practicum.ewm.core.requests.dto.ParticipationRequestDto;
 import ru.practicum.ewm.core.requests.interfaces.RequestService;
 

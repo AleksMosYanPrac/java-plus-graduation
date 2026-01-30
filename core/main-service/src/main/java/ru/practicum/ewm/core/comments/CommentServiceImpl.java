@@ -9,8 +9,8 @@ import ru.practicum.ewm.core.comments.dto.FullCommentDto;
 import ru.practicum.ewm.core.comments.interfaces.CommentMapper;
 import ru.practicum.ewm.core.comments.interfaces.CommentService;
 import ru.practicum.ewm.core.events.EventRepository;
-import ru.practicum.ewm.core.exceptions.DataIntegrityViolation;
-import ru.practicum.ewm.core.exceptions.NotFoundException;
+import ru.practicum.ewm.stats.exceptions.DataIntegrityViolation;
+import ru.practicum.ewm.stats.exceptions.NotFoundException;
 import ru.practicum.ewm.core.users.User;
 import ru.practicum.ewm.core.users.UserRepository;
 

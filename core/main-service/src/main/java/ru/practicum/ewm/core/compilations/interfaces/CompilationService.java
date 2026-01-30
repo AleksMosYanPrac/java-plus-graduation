@@ -3,8 +3,8 @@ package ru.practicum.ewm.core.compilations.interfaces;
 import ru.practicum.ewm.core.compilations.dto.CompilationDto;
 import ru.practicum.ewm.core.compilations.dto.NewCompilationDto;
 import ru.practicum.ewm.core.compilations.dto.UpdateCompilationRequest;
-import ru.practicum.ewm.core.exceptions.DataIntegrityViolation;
-import ru.practicum.ewm.core.exceptions.NotFoundException;
+import ru.practicum.ewm.stats.exceptions.DataIntegrityViolation;
+import ru.practicum.ewm.stats.exceptions.NotFoundException;
 
 import java.util.List;
 

@@ -3,8 +3,8 @@ package ru.practicum.ewm.core.comments.interfaces;
 import ru.practicum.ewm.core.comments.dto.CommentDto;
 import ru.practicum.ewm.core.comments.dto.CommentShort;
 import ru.practicum.ewm.core.comments.dto.FullCommentDto;
-import ru.practicum.ewm.core.exceptions.DataIntegrityViolation;
-import ru.practicum.ewm.core.exceptions.NotFoundException;
+import ru.practicum.ewm.stats.exceptions.DataIntegrityViolation;
+import ru.practicum.ewm.stats.exceptions.NotFoundException;
 
 import java.util.List;
 

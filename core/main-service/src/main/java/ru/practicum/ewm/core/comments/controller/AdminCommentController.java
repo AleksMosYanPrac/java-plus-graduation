@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.core.comments.dto.CommentShort;
 import ru.practicum.ewm.core.comments.interfaces.CommentService;
-import ru.practicum.ewm.core.exceptions.ApiErrorHandler;
-import ru.practicum.ewm.core.exceptions.NotFoundException;
+import ru.practicum.ewm.stats.exceptions.ApiErrorHandler;
+import ru.practicum.ewm.stats.exceptions.NotFoundException;
 
 import java.util.List;
 

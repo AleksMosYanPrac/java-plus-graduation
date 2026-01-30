@@ -1,8 +1,8 @@
 package ru.practicum.ewm.core.categories.interfaces;
 
 import ru.practicum.ewm.core.categories.dto.CategoryDto;
-import ru.practicum.ewm.core.exceptions.DataIntegrityViolation;
-import ru.practicum.ewm.core.exceptions.NotFoundException;
+import ru.practicum.ewm.stats.exceptions.DataIntegrityViolation;
+import ru.practicum.ewm.stats.exceptions.NotFoundException;
 
 import java.util.List;
 

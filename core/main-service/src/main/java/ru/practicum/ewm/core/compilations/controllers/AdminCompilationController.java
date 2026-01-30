@@ -7,9 +7,9 @@ import ru.practicum.ewm.core.compilations.dto.CompilationDto;
 import ru.practicum.ewm.core.compilations.dto.NewCompilationDto;
 import ru.practicum.ewm.core.compilations.dto.UpdateCompilationRequest;
 import ru.practicum.ewm.core.compilations.interfaces.CompilationService;
-import ru.practicum.ewm.core.exceptions.ApiErrorHandler;
-import ru.practicum.ewm.core.exceptions.DataIntegrityViolation;
-import ru.practicum.ewm.core.exceptions.NotFoundException;
+import ru.practicum.ewm.stats.exceptions.ApiErrorHandler;
+import ru.practicum.ewm.stats.exceptions.DataIntegrityViolation;
+import ru.practicum.ewm.stats.exceptions.NotFoundException;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;

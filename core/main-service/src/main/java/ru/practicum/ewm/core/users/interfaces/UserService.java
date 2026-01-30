@@ -1,7 +1,7 @@
 package ru.practicum.ewm.core.users.interfaces;
 
-import ru.practicum.ewm.core.exceptions.DataIntegrityViolation;
-import ru.practicum.ewm.core.exceptions.NotFoundException;
+import ru.practicum.ewm.stats.exceptions.DataIntegrityViolation;
+import ru.practicum.ewm.stats.exceptions.NotFoundException;
 import ru.practicum.ewm.core.users.dto.NewUserRequest;
 import ru.practicum.ewm.core.users.dto.UserDto;
 

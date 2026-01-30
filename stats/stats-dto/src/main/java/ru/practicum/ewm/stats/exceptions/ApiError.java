@@ -1,4 +1,4 @@
-package ru.practicum.ewm.core.exceptions;
+package ru.practicum.ewm.stats.exceptions;
 
 import lombok.Data;
 import org.springframework.http.HttpStatus;

@@ -7,7 +7,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import ru.practicum.ewm.core.events.dto.Sort;
 import ru.practicum.ewm.core.events.dto.State;
-import ru.practicum.ewm.core.events.validation.DateRange;
+import ru.practicum.ewm.stats.validation.DateRange;
+import ru.practicum.ewm.stats.validation.DatableRange;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -17,7 +18,7 @@ import static ru.practicum.ewm.core.events.dto.State.PUBLISHED;
 
 @Data
 @DateRange
-public class Filter {
+public class Filter implements DatableRange {
     private Long[] users;
     private String[] states;
     private Integer[] categories;

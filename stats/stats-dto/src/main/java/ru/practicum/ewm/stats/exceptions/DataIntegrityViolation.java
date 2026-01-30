@@ -1,4 +1,4 @@
-package ru.practicum.ewm.core.exceptions;
+package ru.practicum.ewm.stats.exceptions;
 
 public class DataIntegrityViolation extends Exception {
     public DataIntegrityViolation(String s) {

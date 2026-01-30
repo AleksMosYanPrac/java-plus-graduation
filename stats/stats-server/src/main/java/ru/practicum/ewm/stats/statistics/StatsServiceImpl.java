@@ -5,12 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.stats.dto.EndpointHitDto;
 import ru.practicum.ewm.stats.dto.ViewStatsDto;
+import ru.practicum.ewm.stats.statistics.dto.StatRequest;
 import ru.practicum.ewm.stats.statistics.interfaces.EndpointHitMapper;
 import ru.practicum.ewm.stats.statistics.interfaces.StatsService;
 import ru.practicum.ewm.stats.statistics.interfaces.ViewStatsMapper;
 
-import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -30,20 +32,20 @@ public class StatsServiceImpl implements StatsService {
     }
 
     @Override
-    public List<ViewStatsDto> receive(LocalDateTime start, LocalDateTime end, String[] uris, Boolean isUnique) {
-        log.info("Resieve get URI:{}", uris);
+    public List<ViewStatsDto> receive(StatRequest request) {
+        log.info("Resieve get URI:{}", Arrays.stream(request.getUris()).toList());
         List<ViewStats> views;
-        if (isUnique) {
-            if (uris != null) {
-                views = statsRepository.getDistinctByUris(uris, start, end);
+        if (request.getIsUnique()) {
+            if (Objects.nonNull(request.getUris())) {
+                views = statsRepository.getDistinctByUris(request.getUris(), request.getRangeStart(), request.getRangeEnd());
             } else {
-                views = statsRepository.getDistinctByStartAndEnd(start, end);
+                views = statsRepository.getDistinctByStartAndEnd(request.getRangeStart(), request.getRangeEnd());
             }
         } else {
-            if (uris != null) {
-                views = statsRepository.getByUris(uris, start, end);
+            if (Objects.nonNull(request.getUris())) {
+                views = statsRepository.getByUris(request.getUris(), request.getRangeStart(), request.getRangeEnd());
             } else {
-                views = statsRepository.getByStartAndEnd(start, end);
+                views = statsRepository.getByStartAndEnd(request.getRangeStart(), request.getRangeEnd());
             }
         }
         return views.stream().map(viewStatsMapper::toViewStatsDto).toList();

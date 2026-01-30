@@ -7,9 +7,9 @@ import ru.practicum.ewm.core.events.Filter;
 import ru.practicum.ewm.core.events.dto.EventFullDto;
 import ru.practicum.ewm.core.events.dto.UpdateEventAdminRequest;
 import ru.practicum.ewm.core.events.interfaces.EventService;
-import ru.practicum.ewm.core.exceptions.ApiErrorHandler;
-import ru.practicum.ewm.core.exceptions.DataIntegrityViolation;
-import ru.practicum.ewm.core.exceptions.NotFoundException;
+import ru.practicum.ewm.stats.exceptions.ApiErrorHandler;
+import ru.practicum.ewm.stats.exceptions.DataIntegrityViolation;
+import ru.practicum.ewm.stats.exceptions.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;

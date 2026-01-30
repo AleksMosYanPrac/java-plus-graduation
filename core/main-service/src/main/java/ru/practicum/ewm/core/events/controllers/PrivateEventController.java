@@ -5,9 +5,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.core.events.dto.*;
 import ru.practicum.ewm.core.events.interfaces.EventService;
-import ru.practicum.ewm.core.exceptions.ApiErrorHandler;
-import ru.practicum.ewm.core.exceptions.DataIntegrityViolation;
-import ru.practicum.ewm.core.exceptions.NotFoundException;
+import ru.practicum.ewm.stats.exceptions.ApiErrorHandler;
+import ru.practicum.ewm.stats.exceptions.DataIntegrityViolation;
+import ru.practicum.ewm.stats.exceptions.NotFoundException;
 import ru.practicum.ewm.core.requests.dto.ParticipationRequestDto;
 
 import java.util.List;

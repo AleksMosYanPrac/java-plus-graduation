@@ -11,8 +11,8 @@ import ru.practicum.ewm.core.compilations.dto.UpdateCompilationRequest;
 import ru.practicum.ewm.core.compilations.interfaces.CompilationMapper;
 import ru.practicum.ewm.core.compilations.interfaces.CompilationService;
 import ru.practicum.ewm.core.events.EventRepository;
-import ru.practicum.ewm.core.exceptions.DataIntegrityViolation;
-import ru.practicum.ewm.core.exceptions.NotFoundException;
+import ru.practicum.ewm.stats.exceptions.DataIntegrityViolation;
+import ru.practicum.ewm.stats.exceptions.NotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;

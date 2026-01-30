@@ -1,4 +1,4 @@
-package ru.practicum.ewm.core.exceptions;
+package ru.practicum.ewm.stats.exceptions;
 
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;

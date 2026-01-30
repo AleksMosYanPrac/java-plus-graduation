@@ -6,8 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 import ru.practicum.ewm.core.events.Filter;
 import ru.practicum.ewm.core.events.dto.*;
-import ru.practicum.ewm.core.exceptions.DataIntegrityViolation;
-import ru.practicum.ewm.core.exceptions.NotFoundException;
+import ru.practicum.ewm.stats.exceptions.DataIntegrityViolation;
+import ru.practicum.ewm.stats.exceptions.NotFoundException;
 import ru.practicum.ewm.core.requests.dto.ParticipationRequestDto;
 
 import java.util.List;

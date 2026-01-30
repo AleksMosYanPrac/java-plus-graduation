@@ -1,7 +1,7 @@
 package ru.practicum.ewm.core.requests.interfaces;
 
-import ru.practicum.ewm.core.exceptions.DataIntegrityViolation;
-import ru.practicum.ewm.core.exceptions.NotFoundException;
+import ru.practicum.ewm.stats.exceptions.DataIntegrityViolation;
+import ru.practicum.ewm.stats.exceptions.NotFoundException;
 import ru.practicum.ewm.core.requests.dto.ParticipationRequestDto;
 
 import java.util.List;
