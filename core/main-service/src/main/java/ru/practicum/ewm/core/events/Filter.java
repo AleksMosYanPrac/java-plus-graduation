@@ -81,7 +81,7 @@ public class Filter {
             } else {
                 builder.and(QEvent.event.eventDate.goe(rangeStart));
             }
-        }else{
+        } else {
             builder.and(QEvent.event.eventDate.goe(rangeStart));
         }
         if (Objects.nonNull(categories)) {
@@ -114,7 +114,7 @@ public class Filter {
             } else {
                 builder.and(QEvent.event.eventDate.goe(rangeStart));
             }
-        }else{
+        } else {
             builder.and(QEvent.event.eventDate.goe(rangeStart));
         }
         return builder;

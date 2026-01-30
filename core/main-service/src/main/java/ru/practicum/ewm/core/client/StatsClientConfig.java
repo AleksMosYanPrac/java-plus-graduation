@@ -9,5 +9,4 @@ import ru.practicum.ewm.stats.client.StatsClient;
 @ComponentScan(basePackages = "ru.practicum.ewm.stats.client")
 @EnableFeignClients(clients = StatsClient.class)
 public class StatsClientConfig {
-
 }

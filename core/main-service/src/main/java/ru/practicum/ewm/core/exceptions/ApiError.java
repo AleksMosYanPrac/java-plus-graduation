@@ -17,7 +17,7 @@ public class ApiError {
     private HttpStatus status;
     private String timestamp;
 
-    public static ApiError from(Exception exception, HttpStatus httpStatus){
+    public static ApiError from(Exception exception, HttpStatus httpStatus) {
         ApiError apiError = new ApiError();
         apiError.setErrors(Arrays.stream(exception.getStackTrace()).map(StackTraceElement::toString).toList());
         apiError.setMessage(exception.getMessage());

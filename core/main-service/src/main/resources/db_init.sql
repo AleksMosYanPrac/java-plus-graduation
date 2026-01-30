@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS events (
     request_moderation BOOL,
     title VARCHAR NOT NULL,
     state VARCHAR NOT NULL,
-    views INT
+    views BIGINT
 );
 
 create table if not exists participation_requests (

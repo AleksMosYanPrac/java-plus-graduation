@@ -1,43 +1,37 @@
-package ru.practicum.ewm.stats.service;
+package ru.practicum.ewm.stats.statistics;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.stats.dto.EndpointHitDto;
 import ru.practicum.ewm.stats.dto.ViewStatsDto;
-import ru.practicum.ewm.stats.exception.DateTimeFormatException;
-import ru.practicum.ewm.stats.mapper.EndpointHitMapper;
-import ru.practicum.ewm.stats.mapper.ViewStatsMapper;
-import ru.practicum.ewm.stats.model.EndpointHit;
-import ru.practicum.ewm.stats.model.ViewStats;
-import ru.practicum.ewm.stats.repository.StatsRepository;
+import ru.practicum.ewm.stats.statistics.interfaces.EndpointHitMapper;
+import ru.practicum.ewm.stats.statistics.interfaces.StatsService;
+import ru.practicum.ewm.stats.statistics.interfaces.ViewStatsMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class StatsServiceImpl implements StatsService {
+
     private final StatsRepository statsRepository;
     private final ViewStatsMapper viewStatsMapper;
+    private final EndpointHitMapper endpointHitMapper;
 
     @Override
     public EndpointHitDto send(EndpointHitDto endpointHit) {
-        log.info("send({})", endpointHit);
-        EndpointHit data = EndpointHitMapper.toEndpointHit(endpointHit);
+        log.info("Resieve hit IP:{} URI:{})", endpointHit.getIp(), endpointHit.getUri());
+        EndpointHit data = endpointHitMapper.toEndpointHit(endpointHit);
         EndpointHit endpoint = statsRepository.save(data);
-        log.info("Сохранена информация по запросу в сервис: {}", endpoint);
-        return EndpointHitMapper.toEndpointHitDto(endpoint);
+        return endpointHitMapper.toEndpointHitDto(endpoint);
     }
 
     @Override
     public List<ViewStatsDto> receive(LocalDateTime start, LocalDateTime end, String[] uris, Boolean isUnique) {
-        log.info("receive({}, {}, {}, {})", start, end, uris, isUnique);
-        if (start.isAfter(end)) {
-            throw new DateTimeFormatException("Неверно указаны данные даты и времени");
-        }
+        log.info("Resieve get URI:{}", uris);
         List<ViewStats> views;
         if (isUnique) {
             if (uris != null) {
@@ -52,9 +46,6 @@ public class StatsServiceImpl implements StatsService {
                 views = statsRepository.getByStartAndEnd(start, end);
             }
         }
-        List<ViewStatsDto> statistics = views.stream()
-                .map(viewStatsMapper::toViewStatsDto).collect(Collectors.toList());
-        log.info("Возращена статистика по просмотрам: {}", statistics);
-        return statistics;
+        return views.stream().map(viewStatsMapper::toViewStatsDto).toList();
     }
 }

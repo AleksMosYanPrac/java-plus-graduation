@@ -1,8 +1,7 @@
-create table if not exists endpoint_hits
-(
-    id bigint generated always as identity primary key,
-    app varchar not null,
-    uri varchar not null,
-    ip varchar not null,
-    timestamp timestamp without time zone not null
+CREATE TABLE IF NOT EXISTS endpoint_hits (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    app VARCHAR NOT NULL,
+    uri VARCHAR NOT NULL,
+    ip VARCHAR NOT NULL,
+    timestamp TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );

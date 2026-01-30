@@ -14,3 +14,13 @@ spring:
     url: jdbc:postgresql://localhost:5432/main
     username: postgres
     password: postgres
+
+logging:
+  level:
+    ru.practicum.ewm.stats: "debug"
+
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: "FULL"

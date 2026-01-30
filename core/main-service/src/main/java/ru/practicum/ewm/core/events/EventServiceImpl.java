@@ -80,7 +80,7 @@ public class EventServiceImpl implements EventService {
         newEvent.setInitiator(user);
         newEvent.setPublishedOn(null);
         newEvent.setState(PENDING);
-        newEvent.setViews(0);
+        newEvent.setViews(0L);
         return eventMapper.toEventFullDto(eventRepository.save(newEvent));
     }
 
@@ -311,7 +311,7 @@ public class EventServiceImpl implements EventService {
             if (viewStatsDto != null && !viewStatsDto.isEmpty()) {
                 views = viewStatsDto.getFirst().getHits() != null ? viewStatsDto.getFirst().getHits() : 0L;
             }
-            event.setViews((int) views);
+            event.setViews(views);
             return event;
         } catch (Exception e) {
             log.error("Exception at request info from stat server {}", event.getId(), e);
