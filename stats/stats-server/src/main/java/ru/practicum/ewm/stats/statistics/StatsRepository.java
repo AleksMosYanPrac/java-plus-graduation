@@ -11,7 +11,7 @@
     @Repository
     public interface StatsRepository extends JpaRepository<EndpointHit, Long> {
 
-        @Query("SELECT NEW ru.practicum.ewm.stats.ViewStats(h.app, h.uri, COUNT(h.ip)) " +
+        @Query("SELECT NEW ru.practicum.ewm.stats.statistics.ViewStats(h.app, h.uri, COUNT(h.ip)) " +
                 "FROM EndpointHit h " +
                 "WHERE h.uri IN :uris AND h.timestamp BETWEEN :start AND :end " +
                 "GROUP BY h.app, h.uri " +
@@ -20,7 +20,7 @@
                                   @Param("start") LocalDateTime start,
                                   @Param("end") LocalDateTime end);
 
-        @Query("SELECT NEW ru.practicum.ewm.stats.ViewStats(h.app, h.uri, COUNT(h.ip)) " +
+        @Query("SELECT NEW ru.practicum.ewm.stats.statistics.ViewStats(h.app, h.uri, COUNT(h.ip)) " +
                 "FROM EndpointHit h " +
                 "WHERE h.timestamp BETWEEN :start AND :end " +
                 "GROUP BY h.app, h.uri " +
@@ -28,7 +28,7 @@
         List<ViewStats> getByStartAndEnd(@Param("start") LocalDateTime start,
                                          @Param("end") LocalDateTime end);
 
-        @Query("SELECT NEW ru.practicum.ewm.stats.ViewStats(h.app, h.uri, COUNT(DISTINCT h.ip)) " +
+        @Query("SELECT NEW ru.practicum.ewm.stats.statistics.ViewStats(h.app, h.uri, COUNT(DISTINCT h.ip)) " +
                 "FROM EndpointHit h " +
                 "WHERE h.timestamp BETWEEN :start AND :end " +
                 "GROUP BY h.app, h.uri " +
@@ -36,7 +36,7 @@
         List<ViewStats> getDistinctByStartAndEnd(@Param("start") LocalDateTime start,
                                                  @Param("end") LocalDateTime end);
 
-        @Query("SELECT NEW ru.practicum.ewm.stats.ViewStats(h.app, h.uri, COUNT(DISTINCT h.ip)) " +
+        @Query("SELECT NEW ru.practicum.ewm.stats.statistics.ViewStats(h.app, h.uri, COUNT(DISTINCT h.ip)) " +
                 "FROM EndpointHit h " +
                 "WHERE h.uri IN :uris AND h.timestamp BETWEEN :start AND :end " +
                 "GROUP BY h.app, h.uri " +
