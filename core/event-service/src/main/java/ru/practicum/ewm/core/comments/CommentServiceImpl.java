@@ -33,10 +33,10 @@ public class CommentServiceImpl implements CommentService {
     public FullCommentDto addCommentToEventByUser(Long authorId, CommentDto newCommentDto) throws NotFoundException {
         UserShortDto author = findUserById(authorId)
                 .orElseThrow(() -> new NotFoundException("User not found with Id:" + authorId));
-        if (!eventRepository.existsById(newCommentDto.getEventId())) {
-            throw new NotFoundException("Event not found with Id:" + newCommentDto.getEventId());
-        }
         return transactionTemplate.execute(status -> {
+            if (!eventRepository.existsById(newCommentDto.getEventId())) {
+                throw new NotFoundException("Event not found with Id:" + newCommentDto.getEventId());
+            }
             Comment newComment = new Comment();
             newComment.setEventId(newCommentDto.getEventId());
             newComment.setAuthorId(author.getId());
@@ -86,7 +86,6 @@ public class CommentServiceImpl implements CommentService {
     }
 
     private Optional<UserShortDto> findUserById(Long userId) {
-        //todo
-        return Optional.empty();
+        return Optional.ofNullable(usersClient.findById(userId));
     }
 }

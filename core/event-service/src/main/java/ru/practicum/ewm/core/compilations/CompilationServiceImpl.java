@@ -73,6 +73,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
+    @Transactional
     public CompilationDto updateCompilation(Long compId, UpdateCompilationRequest request) throws NotFoundException {
         log.info("Update Compilation with id:{} and newTitle:{}", compId, request.getTitle());
         Compilation updatedCompilation = compilationRepository.findById(compId)

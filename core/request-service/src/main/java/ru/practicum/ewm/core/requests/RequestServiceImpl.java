@@ -56,17 +56,17 @@ public class RequestServiceImpl implements RequestService {
         if (!event.getState().equals(State.PUBLISHED)) {
             throw new DataIntegrityViolation("Event state not required participation");
         }
-        if (requestRepository.existsByEventIdAndRequesterId(event.getId(), user.getId())) {
-            throw new DataIntegrityViolation("Request already present");
-        }
         if (event.getInitiator().getId().equals(user.getId())) {
             throw new DataIntegrityViolation("User with id:" + userId + "is initiator of event");
         }
-        if (!event.getRequestModeration()
-            && event.getParticipantLimit() == requestRepository.findAllByEventId(eventId).size()) {
-            throw new DataIntegrityViolation("Нет мест для участия в мероприятии");
-        }
         return transactionTemplate.execute(transactionStatus -> {
+            if (requestRepository.existsByEventIdAndRequesterId(event.getId(), user.getId())) {
+                throw new DataIntegrityViolation("Request already present");
+            }
+            if (!event.getRequestModeration()
+                && event.getParticipantLimit() == requestRepository.findAllByEventId(eventId).size()) {
+                throw new DataIntegrityViolation("Participation limit is overflow");
+            }
             ParticipationRequest request = new ParticipationRequest();
             request.setCreated(LocalDateTime.now());
             request.setEventId(event.getId());

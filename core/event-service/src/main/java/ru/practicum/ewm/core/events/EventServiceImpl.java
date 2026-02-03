@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 import ru.practicum.ewm.core.api.contracts.events.dto.*;
 import ru.practicum.ewm.core.api.contracts.requests.RequestsFeignClient;
@@ -60,9 +61,9 @@ public class EventServiceImpl implements EventService {
         log.info("Create new Event by current User:{}, Title:{}", userId, event.getTitle());
         UserShortDto user = findUserById(userId)
                 .orElseThrow(() -> new DataIntegrityViolation("User required for Event:" + event.getTitle()));
-        Category category = categoryRepository.findById(event.getCategory())
-                .orElseThrow(() -> new DataIntegrityViolation("Category required for Event:" + event.getTitle()));
         return transactionTemplate.execute(status -> {
+            Category category = categoryRepository.findById(event.getCategory())
+                    .orElseThrow(() -> new DataIntegrityViolation("Category required for Event:" + event.getTitle()));
             Location location = findLocation(event.getLocation());
             Event newEvent = new Event();
             newEvent.setAnnotation(event.getAnnotation());
@@ -94,55 +95,53 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventFullDto updateByIdByCurrentUser(Long userId, Long eventId, UpdateEventUserRequest event)
             throws NotFoundException, DataIntegrityViolation {
         log.info("Update Event by current User{} Event:{}", userId, eventId);
         Event updatedEvent = eventRepository.findByIdAndInitiatorId(eventId, userId)
                 .orElseThrow(() -> new NotFoundException("Not found event:" + eventId + " for user:" + userId));
-
-        return transactionTemplate.execute(status -> {
-            if (updatedEvent.getState().equals(PUBLISHED)) {
-                throw new DataIntegrityViolation("Can not update event" + eventId + " at state Publish");
+        if (updatedEvent.getState().equals(PUBLISHED)) {
+            throw new DataIntegrityViolation("Can not update event" + eventId + " at state Publish");
+        }
+        if (event.getAnnotation() != null) {
+            updatedEvent.setAnnotation(event.getAnnotation());
+        }
+        if (event.getCategory() != null) {
+            Category category = categoryRepository.findById(event.getCategory())
+                    .orElseThrow(() -> new NotFoundException("Category not found Id:" + event.getCategory()));
+            updatedEvent.setCategory(category);
+        }
+        if (event.getDescription() != null) {
+            updatedEvent.setDescription(event.getDescription());
+        }
+        if (event.getParticipantLimit() != null) {
+            updatedEvent.setParticipantLimit(event.getParticipantLimit());
+        }
+        if (event.getLocation() != null) {
+            Location location = findLocation(event.getLocation());
+            updatedEvent.setLocation(location);
+        }
+        if (event.getPaid() != null) {
+            updatedEvent.setPaid(event.getPaid());
+        }
+        if (event.getParticipantLimit() != null) {
+            updatedEvent.setParticipantLimit(event.getParticipantLimit());
+        }
+        if (event.getRequestModeration() != null) {
+            updatedEvent.setRequestModeration(event.getRequestModeration());
+        }
+        if (event.getTitle() != null) {
+            updatedEvent.setTitle(event.getTitle());
+        }
+        if (event.getStateAction() != null) {
+            switch (event.getStateAction()) {
+                case SEND_TO_REVIEW -> updatedEvent.setState(State.PENDING);
+                case CANCEL_REVIEW -> updatedEvent.setState(State.CANCELED);
             }
-            if (event.getAnnotation() != null) {
-                updatedEvent.setAnnotation(event.getAnnotation());
-            }
-            if (event.getCategory() != null) {
-                Category category = categoryRepository.findById(event.getCategory())
-                        .orElseThrow(() -> new NotFoundException("Category not found Id:" + event.getCategory()));
-                updatedEvent.setCategory(category);
-            }
-            if (event.getDescription() != null) {
-                updatedEvent.setDescription(event.getDescription());
-            }
-            if (event.getParticipantLimit() != null) {
-                updatedEvent.setParticipantLimit(event.getParticipantLimit());
-            }
-            if (event.getLocation() != null) {
-                Location location = findLocation(event.getLocation());
-                updatedEvent.setLocation(location);
-            }
-            if (event.getPaid() != null) {
-                updatedEvent.setPaid(event.getPaid());
-            }
-            if (event.getParticipantLimit() != null) {
-                updatedEvent.setParticipantLimit(event.getParticipantLimit());
-            }
-            if (event.getRequestModeration() != null) {
-                updatedEvent.setRequestModeration(event.getRequestModeration());
-            }
-            if (event.getTitle() != null) {
-                updatedEvent.setTitle(event.getTitle());
-            }
-            if (event.getStateAction() != null) {
-                switch (event.getStateAction()) {
-                    case SEND_TO_REVIEW -> updatedEvent.setState(State.PENDING);
-                    case CANCEL_REVIEW -> updatedEvent.setState(State.CANCELED);
-                }
-            }
-            updatedEvent.setPublishedOn(LocalDateTime.now());
-            return eventMapper.toEventFullDto(eventRepository.save(updatedEvent));
-        });
+        }
+        updatedEvent.setPublishedOn(LocalDateTime.now());
+        return eventMapper.toEventFullDto(eventRepository.save(updatedEvent));
     }
 
 
@@ -160,37 +159,39 @@ public class EventServiceImpl implements EventService {
                                                                     EventRequestStatusUpdateRequest request)
             throws NotFoundException, DataIntegrityViolation {
         log.info("Update event participation status User:{}, Event:{}", userId, eventId);
-        Event event = eventRepository.findByIdAndInitiatorId(eventId, userId)
-                .orElseThrow(() -> new NotFoundException("Not found event:" + eventId + " for user:" + userId));
-        if (event.getParticipantLimit() == 0 || event.isModerationOff()) {
-            return new EventRequestStatusUpdateResult();
-        }
-        if (event.hasNoLimitForParticipants()) {
-            throw new DataIntegrityViolation("Event has no limit for participation requests");
-        }
         if (!requestClient.hasAllRequestsHavePendingStatus(request.getRequestIds())) {
             throw new DataIntegrityViolation("Update possible only for Requests in status PENDING");
         }
-        Map<Long, Status> requestsWithStatus = new HashMap<>();
-        switch (request.getStatus()) {
-            case CONFIRMED -> transactionTemplate.execute(status -> {
-                for (Long requestId : request.getRequestIds()) {
-                    if (event.addConfirmRequest()) {
-                        requestsWithStatus.put(requestId, CONFIRMED);
-                    } else {
+        Map<Long, Status> newStatuses = transactionTemplate.execute(status -> {
+            Event event = eventRepository.findByIdAndInitiatorId(eventId, userId)
+                    .orElseThrow(() -> new NotFoundException("Not found event:" + eventId + " for user:" + userId));
+            if (event.getParticipantLimit() == 0 || event.isModerationOff()) {
+                return new HashMap<>();
+            }
+            if (event.hasNoLimitForParticipants()) {
+                throw new DataIntegrityViolation("Event has no limit for participation requests");
+            }
+            Map<Long, Status> requestsWithStatus = new HashMap<>();
+            switch (request.getStatus()) {
+                case CONFIRMED -> {
+                    for (Long requestId : request.getRequestIds()) {
+                        if (event.addConfirmRequest()) {
+                            requestsWithStatus.put(requestId, CONFIRMED);
+                        } else {
+                            requestsWithStatus.put(requestId, REJECTED);
+                        }
+                    }
+                    eventRepository.save(event);
+                }
+                case REJECTED -> {
+                    for (Long requestId : request.getRequestIds()) {
                         requestsWithStatus.put(requestId, REJECTED);
                     }
                 }
-                return eventRepository.save(event);
-            });
-            case REJECTED -> {
-                for (Long requestId : request.getRequestIds()) {
-                    requestsWithStatus.put(requestId, REJECTED);
-                }
             }
-        }
-        log.info("Map:{}", requestsWithStatus);
-        return requestClient.updateRequestStatus(requestsWithStatus);
+            return requestsWithStatus;
+        });
+        return requestClient.updateRequestStatus(newStatuses);
     }
 
     @Override
@@ -233,57 +234,57 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventFullDto updateEventByIdByAdmin(Long eventId, UpdateEventAdminRequest event)
             throws NotFoundException, DataIntegrityViolation {
         log.info("Update Event by admin Id:{}", eventId);
         Event updatedEvent = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event not found ID:" + eventId));
-        return transactionTemplate.execute(status -> {
-            if (!(updatedEvent.getState() == PENDING)) {
-                throw new DataIntegrityViolation("Can not update event" + eventId + " at state not Pending");
+        if (!(updatedEvent.getState() == PENDING)) {
+            throw new DataIntegrityViolation("Can not update event" + eventId + " at state not Pending");
+        }
+        if (LocalDateTime.now().isAfter(updatedEvent.getEventDate().minusHours(1))) {
+            throw new DataIntegrityViolation("Can not update at 1 hour before start event");
+        }
+        if (event.getAnnotation() != null) {
+            updatedEvent.setAnnotation(event.getAnnotation());
+        }
+        if (event.getCategory() != null) {
+            Category category = categoryRepository.findById(event.getCategory())
+                    .orElseThrow(() -> new NotFoundException("Category not found Id:" + event.getCategory()));
+            updatedEvent.setCategory(category);
+        }
+        if (event.getDescription() != null) {
+            updatedEvent.setDescription(event.getDescription());
+        }
+        if (event.getParticipantLimit() != null) {
+            updatedEvent.setParticipantLimit(event.getParticipantLimit());
+        }
+        if (event.getLocation() != null) {
+            Location location = findLocation(event.getLocation());
+            updatedEvent.setLocation(location);
+        }
+        if (event.getPaid() != null) {
+            updatedEvent.setPaid(event.getPaid());
+        }
+        if (event.getParticipantLimit() != null) {
+            updatedEvent.setParticipantLimit(event.getParticipantLimit());
+        }
+        if (event.getRequestModeration() != null) {
+            updatedEvent.setRequestModeration(event.getRequestModeration());
+        }
+        if (event.getTitle() != null) {
+            updatedEvent.setTitle(event.getTitle());
+        }
+        if (event.getStateAction() != null) {
+            switch (event.getStateAction()) {
+                case PUBLISH_EVENT -> updatedEvent.setState(State.PUBLISHED);
+                case REJECT_EVENT -> updatedEvent.setState(State.CANCELED);
             }
-            if (LocalDateTime.now().isAfter(updatedEvent.getEventDate().minusHours(1))) {
-                throw new DataIntegrityViolation("Can not update at 1 hour before start event");
-            }
-            if (event.getAnnotation() != null) {
-                updatedEvent.setAnnotation(event.getAnnotation());
-            }
-            if (event.getCategory() != null) {
-                Category category = categoryRepository.findById(event.getCategory())
-                        .orElseThrow(() -> new NotFoundException("Category not found Id:" + event.getCategory()));
-                updatedEvent.setCategory(category);
-            }
-            if (event.getDescription() != null) {
-                updatedEvent.setDescription(event.getDescription());
-            }
-            if (event.getParticipantLimit() != null) {
-                updatedEvent.setParticipantLimit(event.getParticipantLimit());
-            }
-            if (event.getLocation() != null) {
-                Location location = findLocation(event.getLocation());
-                updatedEvent.setLocation(location);
-            }
-            if (event.getPaid() != null) {
-                updatedEvent.setPaid(event.getPaid());
-            }
-            if (event.getParticipantLimit() != null) {
-                updatedEvent.setParticipantLimit(event.getParticipantLimit());
-            }
-            if (event.getRequestModeration() != null) {
-                updatedEvent.setRequestModeration(event.getRequestModeration());
-            }
-            if (event.getTitle() != null) {
-                updatedEvent.setTitle(event.getTitle());
-            }
-            if (event.getStateAction() != null) {
-                switch (event.getStateAction()) {
-                    case PUBLISH_EVENT -> updatedEvent.setState(State.PUBLISHED);
-                    case REJECT_EVENT -> updatedEvent.setState(State.CANCELED);
-                }
-            }
-            updatedEvent.setPublishedOn(LocalDateTime.now());
-            return eventMapper.toEventFullDto(eventRepository.save(updatedEvent));
-        });
+        }
+        updatedEvent.setPublishedOn(LocalDateTime.now());
+        return eventMapper.toEventFullDto(eventRepository.save(updatedEvent));
+
     }
 
     @Override
