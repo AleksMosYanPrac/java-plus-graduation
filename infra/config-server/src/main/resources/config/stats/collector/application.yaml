@@ -1,0 +1,7 @@
+#Kafka properties
+collector:
+
+#gRPC properties
+grpc:
+  server:
+    port: 0
