@@ -2,10 +2,10 @@ package ru.practicum.ewm.stats.statistics.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.ewm.core.api.exceptions.ApiErrorContract;
 import ru.practicum.ewm.stats.contracts.StatsContract;
 import ru.practicum.ewm.stats.dto.EndpointHitDto;
 import ru.practicum.ewm.stats.dto.ViewStatsDto;
-import ru.practicum.ewm.stats.exceptions.ApiErrorHandler;
 import ru.practicum.ewm.stats.statistics.dto.StatRequest;
 import ru.practicum.ewm.stats.statistics.interfaces.StatsService;
 
@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/")
 @RequiredArgsConstructor
-public class StatsController implements StatsContract, ApiErrorHandler {
+public class StatsController implements StatsContract, ApiErrorContract {
 
     private final StatsService service;
 

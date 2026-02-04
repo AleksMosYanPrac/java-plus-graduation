@@ -1,8 +1,9 @@
 package ru.practicum.ewm.stats.statistics.dto;
 
 import lombok.Data;
-import ru.practicum.ewm.stats.validation.DateRange;
-import ru.practicum.ewm.stats.validation.DatableRange;
+import ru.practicum.ewm.core.api.validation.DatableRange;
+import ru.practicum.ewm.core.api.validation.DateRange;
+
 
 import java.time.LocalDateTime;
 
