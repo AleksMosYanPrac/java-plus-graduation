@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 import "google/protobuf/empty.proto";
-import "serialization/messages/user_action.proto";
+import "ru/practicum/ewm/stats/serialization/messages/user_action.proto";
 
 package stats.service.collector;
 

@@ -1,7 +1,6 @@
 syntax = "proto3";
 
-import "google/protobuf/empty.proto";
-import "serialization/messages/recommendation_requests.proto";
+import "ru/practicum/ewm/stats/serialization/messages/recommendation_requests.proto";
 
 package stats.service.dashboard;
 
