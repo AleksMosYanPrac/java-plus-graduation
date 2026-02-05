@@ -1,0 +1,36 @@
+#gRPC properties
+grpc:
+  server:
+    port: 0
+
+#Kafka consumers
+kafka:
+  user-actions-consumer:
+    topic: "stats.user-actions.v1"
+    properties:
+      "group.id": "user-actions.analyzer"
+      "bootstrap.servers": "localhost:9092"
+      "key.deserializer": "org.apache.kafka.common.serialization.StringDeserializer"
+      "value.deserializer": "ru.practicum.ewm.stats.serialization.UserActionDeserializer"
+
+  events-similarity-consumer:
+    topic: "stats.events-similarity.v1"
+    properties:
+      "group.id": "events-similarity.analyzer"
+      "bootstrap.servers": "localhost:9092"
+      "key.deserializer": "org.apache.kafka.common.serialization.StringDeserializer"
+      "value.deserializer": "ru.practicum.ewm.stats.serialization.EventSimilarityDeserializer"
+
+#Spring JPA
+spring:
+  jpa:
+    hibernate.ddl-auto: create
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:6541/analyzer
+    username: analyzer
+    password: analyzer
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db_init.sql
