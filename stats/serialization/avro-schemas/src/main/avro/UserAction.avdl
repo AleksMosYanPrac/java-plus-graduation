@@ -13,11 +13,4 @@ protocol UserActionProtocol {
         ActionTypeAvro actionType;
         timestamp_ms timestamp;
     }
-
-        record EventSimilarityAvro {
-            long userId;
-            long eventId;
-            double score;
-            timestamp_ms timestamp;
-        }
 }
