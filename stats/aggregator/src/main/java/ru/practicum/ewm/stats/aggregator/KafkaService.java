@@ -23,7 +23,7 @@ public class KafkaService {
     private final Consumer<String, UserActionAvro> consumer;
     private final Producer<String, EventSimilarityAvro> producer;
 
-    @Value("${aggregator.kafka.producer.events-similarity")
+    @Value("${aggregator.kafka.producer.events-similarity}")
     private String eventsSimilarityTopic;
 
     @Value("${aggregator.kafka.consumer.user-actions}")

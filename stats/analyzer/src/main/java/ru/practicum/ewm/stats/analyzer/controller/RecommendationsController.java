@@ -20,7 +20,7 @@ public class RecommendationsController extends RecommendationsControllerGrpc.Rec
     public void getRecommendationsForUser(UserPredictionsRequestProto request, StreamObserver<RecommendedEventProto> responseObserver) {
         try {
             log.info("Request for User recommendations {}", request);
-            analyzerService.analyze(request).forEach(responseObserver::onNext);
+            analyzerService.analyzeRecommendationsForUser(request).forEach(responseObserver::onNext);
             responseObserver.onCompleted();
         } catch (Exception e) {
             responseObserver.onError(new StatusRuntimeException(
@@ -35,7 +35,7 @@ public class RecommendationsController extends RecommendationsControllerGrpc.Rec
     public void getSimilarEvents(SimilarEventsRequestProto request, StreamObserver<RecommendedEventProto> responseObserver) {
         try {
             log.info("Request for Similarity events {}", request);
-            analyzerService.analyze(request).forEach(responseObserver::onNext);
+            analyzerService.analyzeSimilarEvents(request).forEach(responseObserver::onNext);
             responseObserver.onCompleted();
         } catch (Exception e) {
             responseObserver.onError(new StatusRuntimeException(
@@ -50,7 +50,7 @@ public class RecommendationsController extends RecommendationsControllerGrpc.Rec
     public void getInteractionsCount(InteractionsCountRequestProto request, StreamObserver<RecommendedEventProto> responseObserver) {
         try {
             log.info("Request for Rating event {}", request);
-            analyzerService.analyze(request).forEach(responseObserver::onNext);
+            analyzerService.analyzeInteractionsCounts(request).forEach(responseObserver::onNext);
             responseObserver.onCompleted();
         } catch (Exception e) {
             responseObserver.onError(new StatusRuntimeException(

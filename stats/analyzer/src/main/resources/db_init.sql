@@ -13,5 +13,5 @@ CREATE TABLE IF NOT EXISTS similarities (
     event_b BIGINT NOT NULL,
     score DOUBLE PRECISION NOT NULL,
     timestamp TIMESTAMP WITH TIME ZONE NOT NULL,
-    UNIQUE(event1, event2)
+    UNIQUE(event_a, event_b)
 );

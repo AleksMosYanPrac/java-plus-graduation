@@ -27,7 +27,7 @@ public class AggregatorStarter {
                         log.info("Receive User Action user:{}, event{}", record.value().getUserId(), record.value().getEventId());
                         aggregationService.updateSimilarity(record.value()).forEach((eventSimilarityAvro) -> {
                             kafkaService.send(eventSimilarityAvro);
-                            log.debug("Send event similarity:{}", eventSimilarityAvro);
+                            log.info("Send event similarity:{}", eventSimilarityAvro);
                         });
                     });
                 }

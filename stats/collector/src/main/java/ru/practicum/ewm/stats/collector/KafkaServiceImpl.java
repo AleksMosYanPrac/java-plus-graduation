@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.ewm.stats.avro.ActionTypeAvro;
 import ru.practicum.ewm.stats.avro.UserActionAvro;
 import ru.practicum.ewm.stats.collector.interfaces.KafkaService;
+import ru.practicum.ewm.stats.service.collector.ActionTypeProto;
 import ru.practicum.ewm.stats.service.collector.UserActionProto;
 
 import java.time.Duration;
@@ -32,10 +33,19 @@ public class KafkaServiceImpl implements KafkaService {
         SpecificRecordBase message = UserActionAvro.newBuilder()
                 .setUserId(request.getUserId())
                 .setEventId(request.getEventId())
-                .setActionType(ActionTypeAvro.valueOf(request.getActionType().toString()))
+                .setActionType(caseActionTypeProto(request.getActionType()))
                 .setTimestamp(protoTimestampToAvro(request.getTimestamp()))
                 .build();
         producer.send(userActionTopic, message);
+    }
+
+    private ActionTypeAvro caseActionTypeProto(ActionTypeProto actionType) {
+        return switch (actionType){
+            case ACTION_VIEW -> ActionTypeAvro.VIEW;
+            case ACTION_REGISTER -> ActionTypeAvro.REGISTER;
+            case ACTION_LIKE -> ActionTypeAvro.LIKE;
+            case UNRECOGNIZED -> null;
+        };
     }
 
     @PreDestroy

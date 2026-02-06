@@ -18,6 +18,6 @@ public class UserInteraction {
     private Long id;
     private Long userId;
     private Long eventId;
-    private Float rating;
+    private Double rating;
     private Instant timestamp;
 }
