@@ -2,15 +2,15 @@
 collector:
   kafka:
     producer:
-      user-action-topic: stats.user-actions.v1
+      user-action-topic: "stats.user-actions.v1"
 
 spring:
   kafka:
     producer:
       properties:
-        bootstrap-servers: localhost:9092
-        key-serializer: org.apache.kafka.common.serialization.StringSerializer
-        value-serializer: ru.practicum.ewm.stats.serialization.AvroSerializer
+        bootstrap-servers: "localhost:9092"
+        key-serializer: "org.apache.kafka.common.serialization.StringSerializer"
+        value-serializer: "ru.practicum.ewm.stats.serialization.AvroSerializer"
 
 #gRPC properties
 grpc:
