@@ -1,0 +1,21 @@
+aggregator:
+  kafka:
+    consumer:
+      user-actions: stats.user-actions.v1
+    producer:
+      events-similarity: stats.events-similarity.v1
+
+#Kafka
+spring:
+  kafka:
+    producer:
+      properties:
+        bootstrap.servers: localhost:9092
+        key.serializer: org.apache.kafka.common.serialization.StringSerializer
+        value.serializer: ru.practicum.ewm.stats.serialization.AvroSerializer
+    consumer:
+      properties:
+        bootstrap.servers: localhost:9092
+        key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value.deserializer: ru.practicum.ewm.stats.serialization.UserActionDeserializer
+        group.id: aggregator
