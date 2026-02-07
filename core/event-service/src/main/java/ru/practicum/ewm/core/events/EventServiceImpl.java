@@ -21,8 +21,6 @@ import ru.practicum.ewm.core.events.interfaces.EventMapper;
 import ru.practicum.ewm.core.events.interfaces.EventService;
 import ru.practicum.ewm.core.api.contracts.requests.dto.ParticipationRequestDto;
 import ru.practicum.ewm.stats.client.StatsFeignClient;
-import ru.practicum.ewm.stats.dto.EndpointHitDto;
-import ru.practicum.ewm.stats.dto.ViewStatsDto;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -40,7 +38,6 @@ public class EventServiceImpl implements EventService {
 
     private final UsersFeignClient usersClient;
     private final RequestsFeignClient requestClient;
-    private final StatsFeignClient statsClient;
     private final LocationRepository locationRepository;
     private final CategoryRepository categoryRepository;
     private final EventRepository eventRepository;
@@ -198,7 +195,7 @@ public class EventServiceImpl implements EventService {
     public List<EventShortDto> findEventsByFilter(Filter filter, HttpServletRequest request) {
         log.info("Search Event by filter");
         Page<Event> events = eventRepository.findAll(filter.getPredicate(), filter.getPage());
-        statsClient.post(mapToHitDto(request));
+        //statsClient.post(mapToHitDto(request));
         return switch (filter.getSort()) {
             case VIEWS -> events
                     .stream()
@@ -221,7 +218,7 @@ public class EventServiceImpl implements EventService {
         log.info("Find published event with Id:{}", eventId);
         Event event = eventRepository.findByIdAndState(eventId, PUBLISHED)
                 .orElseThrow(() -> new NotFoundException("Event not found ID:" + eventId));
-        statsClient.post(mapToHitDto(request));
+        //statsClient.post(mapToHitDto(request));
         return eventMapper.toEventFullDto(calculateView(event));
     }
 
@@ -310,32 +307,9 @@ public class EventServiceImpl implements EventService {
 
     private Event calculateView(Event event) {
         log.info("Calculate views for event:{}", event.getId());
-        try {
-            List<ViewStatsDto> viewStatsDto = statsClient.get(
-                    LocalDateTime.now().minusDays(2),
-                    LocalDateTime.now().plusDays(2),
-                    new String[]{"/events/" + event.getId()},
-                    true
-            );
             long views = 0L;
-            if (viewStatsDto != null && !viewStatsDto.isEmpty()) {
-                views = viewStatsDto.getFirst().getHits() != null ? viewStatsDto.getFirst().getHits() : 0L;
-            }
             event.setViews(views);
             return event;
-        } catch (Exception e) {
-            log.error("Exception at request info from stat server {}", event.getId(), e);
-            return event;
-        }
-    }
-
-    private EndpointHitDto mapToHitDto(HttpServletRequest request) {
-        EndpointHitDto endpointHit = new EndpointHitDto();
-        endpointHit.setApp("event");
-        endpointHit.setIp(request.getRemoteAddr());
-        endpointHit.setUri(request.getRequestURI());
-        endpointHit.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        return endpointHit;
     }
 
     private Optional<UserShortDto> findUserById(Long userId) {
